@@ -1,5 +1,7 @@
 .idea/
 *.iml
+beanmaker-conf/
 build/
 javadoc/
 src-ascii/
+sql/prov.sql
