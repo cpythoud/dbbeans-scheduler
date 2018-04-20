@@ -12,7 +12,7 @@ public abstract class DbBean {
 	protected static final DB db;
 	protected static final DBAccess dbAccess;
 
-	private static final String DATA_SOURCE = "java:comp/env/jdbc/dsr_rh";
+	private static final String DATA_SOURCE = "java:comp/env/jdbc/dbbean_scheduler";
 
 	static {
 		db = new DBFromDataSource(DATA_SOURCE);
