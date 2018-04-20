@@ -25,5 +25,16 @@ public class RegistryEntry extends RegistryEntryBase {
 		super(rs);
 	}
 
+	void execute(Scheduler scheduler) {
+		try {
+			getInstance().execute();
+		} catch (final Throwable throwable) {
+			scheduler.reportException(throwable, this);
+		}
+	}
+
+	private PlannedTask getInstance() throws ClassNotFoundException, InstantiationException, IllegalAccessException {
+		return (PlannedTask) Class.forName(getType().getJavaClass()).newInstance();
+	}
 }
 

@@ -4,6 +4,7 @@
 package org.dbbeans.scheduler;
 
 import org.dbbeans.sql.DBTransaction;
+import org.dbbeans.util.Dates;
 
 import java.sql.Date;
 import java.sql.ResultSet;
@@ -28,7 +29,7 @@ public class Daily extends DailyBase {
 		super(rs);
 	}
 
-	public boolean hasEnding() {
+	private boolean hasEnding() {
 		return !isIdEndingEmpty();
 	}
 
@@ -36,6 +37,42 @@ public class Daily extends DailyBase {
 	protected void preDeleteExtraDbActions(DBTransaction transaction) {
 		if (hasEnding())
 			getEnding().delete(transaction);
+	}
+
+	public boolean executeAssociatedActions(Scheduler scheduler) {
+		if (hasEnding() && getEnding().hasEnded())
+			return false;
+
+		if (!hasStarted())
+			return false;
+
+		if (isBusinessDaysOnly() && !todayIsBusinessDay())
+			return false;
+
+		if (!shouldBeRunToday())
+			return false;
+
+		final RegistryEntry registryEntry = getRegistryEntry();
+		if (!registryEntry.isActive())
+			return false;
+		registryEntry.execute(scheduler);
+
+		return true;
+	}
+
+	private boolean hasStarted() {
+		return Dates.compare(Dates.getCurrentDate(), getStart()) >= 0;
+	}
+
+	// TODO: code check and probably move it to utility class
+	// TODO: create interface BusinessDays to be implemented by business day calculators = parameter to the scheduler
+	private boolean todayIsBusinessDay() {
+		return true;
+	}
+
+	// TODO: code checks for tasks that should only be executed every X day
+	private boolean shouldBeRunToday() {
+		return true;
 	}
 }
 

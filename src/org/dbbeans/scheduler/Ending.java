@@ -26,5 +26,9 @@ public class Ending extends EndingBase {
 		super(rs);
 	}
 
+	// TODO: code test for past dates && how many times the action has been executed
+	boolean hasEnded() {
+		return false;
+	}
 }
 
