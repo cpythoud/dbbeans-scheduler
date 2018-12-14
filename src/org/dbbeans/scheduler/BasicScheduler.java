@@ -18,4 +18,9 @@ public enum  BasicScheduler implements Scheduler {
         System.err.println(Exceptions.getStackTrace(throwable));
         System.err.println("----------------------------------------");
     }
+
+    @Override
+    public SchedulerParameters getParameters() {
+        return new SchedulerParameters();
+    }
 }

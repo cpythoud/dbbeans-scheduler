@@ -6,6 +6,8 @@ package org.dbbeans.scheduler;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 
+import java.util.logging.Level;
+
 public class RegistryEntry extends RegistryEntryBase {
 	public RegistryEntry() { }
 
@@ -26,9 +28,12 @@ public class RegistryEntry extends RegistryEntryBase {
 	}
 
 	void execute(Scheduler scheduler) {
+		String baseLogMessage = "Executing registry entry #" + getId() + " " + getCode();
+		scheduler.log(Level.FINER, baseLogMessage);
 		try {
 			getInstance().execute();
 		} catch (final Throwable throwable) {
+			scheduler.log(Level.WARNING, baseLogMessage + ", exception thrown: " + throwable.getClass());
 			scheduler.reportException(throwable, this);
 		}
 	}

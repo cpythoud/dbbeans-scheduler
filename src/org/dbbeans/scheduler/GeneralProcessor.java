@@ -1,12 +1,8 @@
 package org.dbbeans.scheduler;
 
-import org.dbbeans.util.Dates;
-
-import java.sql.Date;
+import java.util.logging.Level;
 
 public class GeneralProcessor {
-
-    private final Date today = Dates.getCurrentDate();
 
     private final Scheduler scheduler;
 
@@ -27,8 +23,10 @@ public class GeneralProcessor {
     }
 
     private void processDaily() {
+        scheduler.log(Level.FINER, "--- BEGIN PROCESSING DAILIES ---");
         for (Daily daily: Daily.getAll())
             daily.executeAssociatedActions(scheduler);
+        scheduler.log(Level.FINER, "--- END PROCESSING DAILIES ---");
     }
 
     private void processWeekly() {

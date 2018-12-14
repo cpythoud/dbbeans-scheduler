@@ -10,6 +10,8 @@ import java.sql.Date;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 
+import java.util.logging.Level;
+
 public class Daily extends DailyBase {
 	public Daily() { }
 
@@ -40,21 +42,31 @@ public class Daily extends DailyBase {
 	}
 
 	public boolean executeAssociatedActions(Scheduler scheduler) {
-		if (hasEnding() && getEnding().hasEnded())
+		if (hasEnding() && getEnding().hasEnded()) {
+			logNoRun(scheduler, "past execution end date");
 			return false;
+		}
 
-		if (!hasStarted())
+		if (!hasStarted()) {
+			logNoRun(scheduler, "prior to execution start date");
 			return false;
+		}
 
-		if (isBusinessDaysOnly() && !todayIsBusinessDay())
+		if (isBusinessDaysOnly() && !todayIsBusinessDay()) {
+			logNoRun(scheduler, "not a business day");
 			return false;
+		}
 
-		if (!shouldBeRunToday())
+		if (!shouldBeRunToday()) {
+			logNoRun(scheduler, "only executed every " + getEveryXDays() + " day");
 			return false;
+		}
 
 		final RegistryEntry registryEntry = getRegistryEntry();
-		if (!registryEntry.isActive())
+		if (!registryEntry.isActive()) {
+			logNoRun(scheduler, "registry entry marked as inactive");
 			return false;
+		}
 		registryEntry.execute(scheduler);
 
 		return true;
@@ -73,6 +85,10 @@ public class Daily extends DailyBase {
 	// TODO: code checks for tasks that should only be executed every X day
 	private boolean shouldBeRunToday() {
 		return true;
+	}
+
+	private void logNoRun(Scheduler scheduler, String message) {
+		scheduler.log(Level.FINER, message);
 	}
 }
 
