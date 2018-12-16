@@ -41,5 +41,18 @@ public class RegistryEntry extends RegistryEntryBase {
 	private PlannedTask getInstance() throws ClassNotFoundException, InstantiationException, IllegalAccessException {
 		return (PlannedTask) Class.forName(getType().getJavaClass()).newInstance();
 	}
+
+	public static RegistryEntry get(String code) {
+		return dbAccess.processQuery(
+				"SELECT " + DATABASE_FIELD_LIST + " FROM schdlr_registry_entries WHERE code=?",
+				stat -> stat.setString(1, code),
+				rs -> {
+					if (rs.next())
+						return new RegistryEntry(rs);
+
+					throw new IllegalArgumentException("No registry entry with code: " + code);
+				}
+		);
+	}
 }
 

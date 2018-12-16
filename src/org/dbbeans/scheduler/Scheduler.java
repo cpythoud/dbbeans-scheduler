@@ -16,4 +16,8 @@ public interface Scheduler {
         if (logger != null)
             logger.log(level, message);
     }
+
+    default void executeNow(String code) {
+        RegistryEntry.get(code).execute(this);
+    }
 }
