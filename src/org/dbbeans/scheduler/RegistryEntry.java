@@ -28,14 +28,15 @@ public class RegistryEntry extends RegistryEntryBase {
 	}
 
 	void execute(Scheduler scheduler) {
-		String baseLogMessage = "Executing registry entry #" + getId() + " " + getCode();
-		scheduler.log(Level.FINER, baseLogMessage);
+		String baseLogMessage = " executing registry entry #" + getId() + " " + getCode();
+		scheduler.log(Level.FINER, "Start" + baseLogMessage);
 		try {
 			getInstance().execute();
 		} catch (final Throwable throwable) {
 			scheduler.log(Level.WARNING, baseLogMessage + ", exception thrown: " + throwable.getClass());
 			scheduler.reportException(throwable, this);
 		}
+		scheduler.log(Level.FINER, "Done" + baseLogMessage);
 	}
 
 	private PlannedTask getInstance() throws ClassNotFoundException, InstantiationException, IllegalAccessException {
